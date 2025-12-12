@@ -3,10 +3,9 @@ __pycache__/
 data/raw/
 data/processed/
 models/*.pt
-!models/.gitkeep
-.env
-.venv/
+models/weights/
 venv/
 .DS_Store
 .idea/
 .vscode/
+.pt/
