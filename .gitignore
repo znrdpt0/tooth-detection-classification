@@ -3,7 +3,8 @@ __pycache__/
 data/raw/
 data/processed/
 models/*.pt
-models/weights/
+models/stage1/train/weights
+models/stage2/train/weights
 venv/
 .DS_Store
 .idea/

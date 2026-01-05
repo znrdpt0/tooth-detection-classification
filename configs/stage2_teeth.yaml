@@ -1,0 +1,17 @@
+path : stage2_teeth.yaml
+
+train : images/train
+val : images/val
+
+nc : 8
+
+names :
+  0 : Incisor
+  1 : Canine
+  2 : Premolar
+  3 : Molar
+  4 : Impacted
+  5 : Caries
+  6 : Periapical Lesion
+  7 : Deep Caries
+

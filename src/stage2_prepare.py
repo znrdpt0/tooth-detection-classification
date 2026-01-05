@@ -23,7 +23,7 @@ def apply_clahe(image):
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     else:
         gray = image
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
     enhanced = clahe.apply(gray)
     return cv2.cvtColor(enhanced, cv2.COLOR_GRAY2BGR)     
 
@@ -106,7 +106,7 @@ def main() :
                 
                 enhanced = apply_clahe(crop)
 
-                fname = f"{os.path.splitext(file_name)[0]}_q{qid+1}.jpg"
+                fname = f"{os.path.splitext(file_name)[0]}_q{qid+1}.png"
                 save_path = f"{OUTPUT_DIR}/images/{split_name}/{fname}"
                 cv2.imwrite(save_path, enhanced)
 
@@ -131,11 +131,8 @@ def main() :
 
                 if valid_lines:
                     # save folders
-                    lbl_path = save_path.replace('/images/', '/labels/').replace('.jpg', '.txt')
+                    lbl_path = save_path.replace('/images/', '/labels/').replace('.png', '.txt')
                     with open(lbl_path, 'w') as f:
                         f.write("\n".join(valid_lines))
 
 main()
-
-
-
