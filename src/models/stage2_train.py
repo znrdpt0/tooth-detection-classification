@@ -2,31 +2,30 @@ from ultralytics import YOLO
 import torch
 
 def main ():
-    yaml_file = 'stage2_teeth.yaml'
+    yaml_file = '../../configs/stage2_enumeration.yaml'
+    project_dir = "../../models"
 
-    if not torch.cuda.is_available():
-        print("GPU is not available")
-    else:
-        print("GPU active")
-
-    model = YOLO('yolov8x.pt')
+    model = YOLO('yolov8m.pt')
 
     model.train(
         data = yaml_file,
         epochs = 100,
-        imgsz =1280,
+        imgsz =640,
         batch = 8,
-        device = 0,
-        project = 'models',
-        name = 'stage2_x_1280',
+        device = 'mps',
+        project = project_dir,
+        name = 'stage2_m_640',
         exist_ok = True,
 
-        patience = 20,
+        patience = 15,
         save = True,
         cos_lr = True,
-        optimizer = 'AdamW',
+        optimizer = 'auto',
         lr0 = 0.001,
         dropout = 0.1,
+
+        augment = True,
+        close_mosaic = 10,
         verbose = True
     )
 main()            

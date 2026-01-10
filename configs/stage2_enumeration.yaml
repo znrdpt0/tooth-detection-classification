@@ -1,0 +1,14 @@
+path : /Users/connor/tooth-detection-classification/data/processed/stage2_enumeration
+
+train : images/train
+val : images/val
+
+nc : 4
+
+names :
+  0 : Incisor
+  1 : Canine
+  2 : Premolar
+  3 : Molar
+
+
