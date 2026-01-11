@@ -11,30 +11,27 @@ MODEL_PATHS = {
     "stage3": "../models/stage3_m_224_cls/weights/best.pt"
 }
 
-# Sadece hastalıkları çizmek için renk paleti
+
 COLORS = {
-    "Caries": (0, 165, 255),        # Turuncu
-    "Deep_Caries": (0, 0, 255),     # Kırmızı
-    "Impacted": (255, 0, 255),      # Mor
-    "Periapical_Lesion": (0, 255, 255) # Sarı
+    "Caries": (0, 165, 255),        # orange
+    "Deep_Caries": (0, 0, 255),     # red
+    "Impacted": (255, 0, 255),      # purple
+    "Periapical_Lesion": (0, 255, 255) # yellow
 }
 
 def load_models():
-    """Modelleri yükler ve bir sözlük olarak döndürür."""
-    print("🤖 Sistem Başlatılıyor...")
     models = {}
     try:
         for key, path in MODEL_PATHS.items():
             if os.path.exists(path):
                 models[key] = YOLO(path)
             else:
-                print(f"❌ Kritik Hata: Model dosyası eksik -> {path}")
+                print(f" Hata: Model dosyası eksik -> {path}")
                 sys.exit(1)
     except Exception as e:
-        print(f"❌ Beklenmeyen Hata: {e}")
+        print(f"Beklenmeyen Hata: {e}")
         sys.exit(1)
         
-    print("✅ Yapay Zeka Motoru Hazır!")
     return models
 
 def check_containment(inner_box, outer_box):
@@ -53,15 +50,15 @@ def analyze_image(image_path, models):
     if img is None: return None, []
 
     h_img, w_img = img.shape[:2]
-    detected_pathologies = [] # Sonuçları burada toplayacağız
+    detected_pathologies = [] 
 
-    # --- ADIM 1: Quadrant (Stage 1) ---
+    # --- Stage 1: Quadrant  ---
     q_results = models["stage1"].predict(img, conf=0.5, verbose=False)
     q_boxes = q_results[0].boxes
     
     if len(q_boxes) == 0:
         print("⚠️ Uyarı: Quadrant bulunamadı.")
-        return img, [] # Boş liste dön
+        return img, []
 
     quadrants = []
     for box in q_boxes:
@@ -69,11 +66,11 @@ def analyze_image(image_path, models):
         label = q_results[0].names[int(box.cls[0])].replace("quadrant_", "Q").replace("Quadrant ", "Q")
         quadrants.append((label, coords))
 
-    # --- ADIM 2: Diş Tespiti (Stage 2) ---
-    t_results = models["stage2"].predict(img, conf=0.25, verbose=False)
+    # --- Stage 2: Diş Tespiti ---
+    t_results = models["stage2"].predict(img, conf=0.05, verbose=False)
     teeth_boxes = t_results[0].boxes
 
-    # --- ADIM 3: Analiz Döngüsü (Stage 3) ---
+    # --- Stage 3: Analiz Döngüsü ---
     for box in teeth_boxes:
         tx1, ty1, tx2, ty2 = map(int, box.xyxy[0].cpu().numpy())
         tooth_box = [tx1, ty1, tx2, ty2]
@@ -137,37 +134,3 @@ def visualize_results(img, pathologies):
         cv2.putText(final_img, label, (x1 + 5, y1 - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
         
     return final_img
-
-# --- MAIN BLOCK (Terminalden çalışınca burası çalışır) ---
-if __name__ == "__main__":
-    # Test Resmi (Bunu değiştirebilir veya argüman olarak alabilirsin)
-    TEST_IMAGE = "../data/raw/val/validation_data/quadrant_enumeration_disease/xrays/val_1.png"
-    OUTPUT_FILE = "final_output.jpg"
-
-    # 1. Modelleri Yükle
-    ai_models = load_models()
-    
-    if os.path.exists(TEST_IMAGE):
-        print(f"🔍 Analiz Ediliyor: {TEST_IMAGE}")
-        start = time.time()
-        
-        # 2. Analiz Et (Logic)
-        original_img, results = analyze_image(TEST_IMAGE, ai_models)
-        
-        # 3. Sonuçları Bas (Report)
-        print(f"\n📊 TESPİT EDİLEN PATOLOJİLER ({len(results)} adet):")
-        print("-" * 40)
-        for res in results:
-            print(f"🦷 {res['quadrant']} {res['tooth_type']:<10} -> {res['disease']} (%{int(res['confidence']*100)})")
-        print("-" * 40)
-        
-        # 4. Çiz ve Kaydet (Visualization)
-        if original_img is not None:
-            painted_img = visualize_results(original_img, results)
-            cv2.imwrite(OUTPUT_FILE, painted_img)
-            print(f"✅ Görsel Kaydedildi: {OUTPUT_FILE}")
-            
-        print(f"⏱️ Toplam Süre: {time.time() - start:.2f} sn")
-            
-    else:
-        print(f"❌ Test resmi bulunamadı: {TEST_IMAGE}")

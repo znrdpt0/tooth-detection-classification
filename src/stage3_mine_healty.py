@@ -90,10 +90,15 @@ def mine_healthy_teeth():
                 x1, y1, x2, y2 = map(int, box[:4])
                 pred_box = [x1, y1, x2, y2]
                 
-                # Çakışma Kontrolü (IoU)
+                # Çakışma Kontrolü (STRICT MODE)
+                # Eğer tahmin edilen kutu, herhangi bir hastalık kutusuyla 1 piksel bile çakışıyorsa
+                # onu "Sağlam" olarak KABUL ETME. Risk alma.
                 is_sick = False
                 for disease_box in known_diseases:
-                    if calculate_iou(pred_box, disease_box) > 0.3:
+                    # IoU yerine Intersection > 0 kontrolü
+                    x_overlap = max(0, min(pred_box[2], disease_box[2]) - max(pred_box[0], disease_box[0]))
+                    y_overlap = max(0, min(pred_box[3], disease_box[3]) - max(pred_box[1], disease_box[1]))
+                    if x_overlap * y_overlap > 0:
                         is_sick = True
                         break
                 
