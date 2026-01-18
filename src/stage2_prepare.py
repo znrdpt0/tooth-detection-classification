@@ -26,13 +26,13 @@ def get_tooth_class(cat2_id):
     
     tooth_num = int(cat2_id) % 10 # 11->1, 26->6
     
-    if tooth_num in [1, 2]: 
+    if tooth_num in [0, 1]: 
         return 0 
-    elif tooth_num == 3:     
+    elif tooth_num == 2:     
         return 1 
-    elif tooth_num in [4, 5]: 
+    elif tooth_num in [3, 4]: 
         return 2 
-    elif tooth_num in [6, 7, 8]: 
+    elif tooth_num in [5, 6, 7]: 
         return 3 
     
     return None
@@ -75,7 +75,7 @@ def main():
             anns = img_anns.get(img_info['id'], [])
             
             # ADIM 1: Dişleri Quadrant ID'sine göre grupla
-            quad_groups = {1:[], 2:[], 3:[], 4:[]}
+            quad_groups = {0:[], 1:[], 2:[], 3:[]}
             for ann in anns:
                 qid = ann.get('category_id_1') # Quadrant ID
                 if qid in quad_groups:

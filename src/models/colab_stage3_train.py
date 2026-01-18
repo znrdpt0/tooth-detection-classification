@@ -33,12 +33,13 @@ class trainer_with_weight(ClassificationTrainer):
 
 def main():
     load_weights()
-    model = YOLO('yolov8s-cls.pt')
+    model_path = 'yolov8s-cls.pt'
+    model = YOLO(model_path)
     
     print(f"Eğitim Başlıyor: {model}")
 
     train_settings = dict(
-        model = model,
+        model = model_path,
         data = data,
         epochs = 100,
         imgsz = 224,
