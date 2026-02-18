@@ -11,7 +11,7 @@ def main ():
         data = yaml_file,
         epochs = 100,
         imgsz =640,
-        batch = 8,
+        batch = 32,
         device = 'mps',
         project = project_dir,
         name = 'stage2_m_640',

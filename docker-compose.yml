@@ -1,0 +1,23 @@
+services:
+  #FastAPI (Backend)
+  api:
+    build: 
+      context: .
+      dockerfile: src/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models/weights:/app/models/weights  # Modelleri içeri map ediyoruz (İmaj şişmesin diye)
+    
+  # 2.Streamlit(fronted)
+  web:
+    build:
+      context: .
+      dockerfile: src/frontend/Dockerfile
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api  # Önce backend ayağa kalksın, sonra frontend
+    environment:
+      # İpucu 3: Magic DNS! API'ye 127.0.0.1 ile değil, servis adıyla (api) gidiyoruz.
+      - API_URL=http://api:8000/predict
