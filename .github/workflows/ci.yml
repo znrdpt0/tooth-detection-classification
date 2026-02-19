@@ -1,0 +1,40 @@
+name: CI - Docker Build Test
+
+# Triggers
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-test:
+    #Runner
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      #API test(backend)
+      - name: Test Build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./src/Dockerfile
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # 4.WEB test(frontend)
+      - name: Test Build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./src/frontend/Dockerfile
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
