@@ -58,5 +58,5 @@ jobs:
             docker stop dental-api dental-ui || true
             docker rm dental-api dental-ui || true
             
-            docker run -d --name dental-api -p 8000:8000 -v /home/ubuntu/dental-models/weights:/app/models/weights ${{ secrets.DOCKERHUB_USERNAME }}/dental-api:latest
+            docker run -d --name dental-api -p 8000:8000 -v /home/ubuntu/weights:/app/models/weights ${{ secrets.DOCKERHUB_USERNAME }}/dental-api:latest
             docker run -d --name dental-ui -p 8501:8501 -e API_URL=http://${{ secrets.EC2_HOST }}:8000/predict ${{ secrets.DOCKERHUB_USERNAME }}/dental-ui:latest
