@@ -6,7 +6,8 @@ data/
 .ipynb_checkpoints/
 runs/
 experiments/
-models/stage*/weights
+models/stage*/weights/
+models/weights/
 venv/
 .DS_Store
 .idea/
