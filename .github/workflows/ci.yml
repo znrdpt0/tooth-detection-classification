@@ -27,8 +27,8 @@ jobs:
           file: ./src/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/dental-api:latest
-          cache-from: type=gha 
-          cache-to: type=gha,mode=max 
+          cache-from: type=gha,scope=api
+          cache-to: type=gha,mode=max,scope=api 
 
       - name: Build and Push UI
         uses: docker/build-push-action@v5
@@ -37,8 +37,8 @@ jobs:
           file: ./src/frontend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/dental-ui:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=ui
+          cache-to: type=gha,mode=max,scope=ui
 
   deploy:
     needs: build-and-push
