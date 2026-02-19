@@ -16,5 +16,8 @@ src/stage3_mine_healty.py
 src/stage3_prepare.py
 src/services/__pycache__/
 *.pyc
+.github/
 .git/
+*.md
 .gitignore
+.dockerignore
