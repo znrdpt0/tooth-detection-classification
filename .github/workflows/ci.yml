@@ -47,6 +47,7 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/dental-api:latest
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/dental-ui:latest
             
+            
             docker stop dental-api dental-ui || true
             docker rm dental-api dental-ui || true
             
